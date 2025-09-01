@@ -587,7 +587,7 @@ body:before {
 }
 /* Error state */
 .error-2000 {
-  background: #0000aa;
+  background: #556195;
   /* old Windows blue screen */
   color: white;
   text-align: center;
