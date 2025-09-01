@@ -591,6 +591,9 @@ body:before {
   /* old Windows blue screen */
   color: white;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .error-2000 .play,
