@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   future: { compatibilityVersion: 4 },
   nitro: {
-      prerender: { crawlLinks: true, failOnError: false }
+      prerender: { crawlLinks: true, failOnError: false },
+      preset: 'digital-ocean'
   },
 })
