@@ -1,38 +1,45 @@
 <template>
-  <div>
-    <div class="scanlines" />
+  <div class="min-h-screen relative">
 
-    <div
-        class="intro-wrap"
-        :class="{ 'error-2000': isError }"
-        v-on:click="isError ? reset() : undefined">
-      <div class="noise" />
-      <div class="noise noise-moving" />
+    <NeonBackgroundCanvas />
 
-      <template v-if="!isError">
-        <div class="play"
-             v-on:click.stop="toggle">
-          {{ playLabel }}
-        </div>
-        <div class="time">
-          {{ elapsedDisplay }}
-        </div>
-        <div class="recordSpeed">
-          {{ countdownDisplay }}
-        </div>
-      </template>
+    <div class="relative z-10">
+      <div class="scanlines" />
 
-      <template v-else>
-        <div>SYSTEM ERROR / 2000</div>
-        <div>*** Y2K EXCEPTION ***</div>
-        <div>CLICK ANYWHERE TO RESET</div>
-      </template>
+      <div
+          class="intro-wrap"
+          :class="{ 'error-2000': isError }"
+          v-on:click="isError ? reset() : undefined">
+        <div class="noise" />
+        <div class="noise noise-moving" />
+
+        <template v-if="!isError">
+          <div class="play"
+               v-on:click.stop="toggle">
+            {{ playLabel }}
+          </div>
+
+          <div class="time">
+            {{ elapsedDisplay }}
+          </div>
+          <div class="label">
+            Y2K Countdown
+          </div>
+          <div class="recordSpeed">
+            {{ countdownDisplay }}
+          </div>
+        </template>
+      </div>
     </div>
+
+    <MatrixRain v-if="isError" v-on:reset="reset" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import MatrixRain from '../components/MatrixRain.vue';
+import NeonBackgroundCanvas from '../components/NeonBackgroundCanvas.vue';
 
 /**
  * Local state.
@@ -41,7 +48,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 /**
  * The initial countdown time in ms (30 seconds).
  */
-const startMinutes = 0.5;
+const startMinutes = 0.1;
 
 /**
  * The initial countdown time in milliseconds.
@@ -143,7 +150,7 @@ const formatCountdown = (ms: number) => {
   const h = Math.floor(totalSec / 3600);
   const m = Math.floor((totalSec % 3600) / 60);
   const s = totalSec % 60;
-  return `Y2K ${h}:${padNumbersToTwoDigits(m)}:${padNumbersToTwoDigits(s)}`;
+  return `${h}:${padNumbersToTwoDigits(m)}:${padNumbersToTwoDigits(s)}`;
 };
 
 /**
@@ -247,16 +254,19 @@ onBeforeUnmount(() => {
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 *::-moz-selection {
   background: #fd5d8d;
   color: #f1034a;
   color: #270245;
 }
+
 *::selection {
   background: #fd5d8d;
   color: #f1034a;
@@ -273,6 +283,7 @@ body {
   background: #000;
   overflow: hidden;
 }
+
 body:before {
   content: "";
   position: absolute;
@@ -354,7 +365,7 @@ body:before {
   font-size: 2rem;
   width: 100vw;
   height: 100vh;
-  background: #556195;
+  background: transparent;
 }
 .intro-wrap .noise:before {
   background-size: 200%;
@@ -386,7 +397,21 @@ body:before {
 .intro-wrap .recordSpeed {
   position: absolute;
   left: 2rem;
-  bottom: 2rem;
+  right: 2rem;
+  text-align: center;
+  width: 100%;
+  bottom: 50%;
+  will-change: text-shadow;
+  -webkit-animation: rgbText 1s steps(9) 0s infinite alternate;
+  animation: rgbText 1s steps(9) 0s infinite alternate;
+}
+.intro-wrap .label {
+  position: absolute;
+  left: 2rem;
+  right: 2rem;
+  text-align: center;
+  width: 100%;
+  bottom: 55%;
   will-change: text-shadow;
   -webkit-animation: rgbText 1s steps(9) 0s infinite alternate;
   animation: rgbText 1s steps(9) 0s infinite alternate;
@@ -595,7 +620,7 @@ body:before {
   justify-content: center;
   flex-direction: column;
 }
-
+S
 .error-2000 .play,
 .error-2000 .recordSpeed,
 .error-2000 .time {
