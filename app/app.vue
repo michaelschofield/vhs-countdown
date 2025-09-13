@@ -44,16 +44,25 @@ import NeonBackgroundCanvas from '../components/NeonBackgroundCanvas.vue';
 /**
  * Local state.
  */
+const route = useRoute();
 
 /**
- * The initial countdown time in ms (30 seconds).
+ * The initial countdown time in minutes
  */
-const startMinutes = 0.1;
+const startMinutes = computed(() => {
+  const q = route.query.minutes
+  // handle string | string[] | undefined
+  const raw = Array.isArray(q) ? q[0] : q
+  const num = Number(raw)
+  // if NaN or not finite, fall back; if 0 or <1, bump; if huge, clamp
+  const safe = Number.isFinite(num) ? Math.trunc(num) : 480
+  return Math.min(999, Math.max(1, safe || 480))
+});
 
 /**
  * The initial countdown time in milliseconds.
  */
-const startMilliseconds = startMinutes * 60 * 1000;
+const startMilliseconds = computed(() => startMinutes.value * 60_000)
 
 /**
  * Returns a formatted countdown string like "Y2K 0:00:00".
@@ -107,7 +116,7 @@ const isRunning = ref<boolean>(false);
 /**
  * The remaining time in ms for the countdown.
  */
-const msRemaining = ref<number>(startMilliseconds);
+const msRemaining = ref<number>(startMilliseconds.value)
 
 /**
  * The label for the play/pause button, depending on state.
@@ -190,7 +199,7 @@ const reset = () => {
   isRunning.value = false;
   isError.value = false;
 
-  msRemaining.value = startMilliseconds;
+  msRemaining.value = startMilliseconds.value;
   endTs.value = null;
 
   elapsedOffset.value = 0;
